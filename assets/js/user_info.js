@@ -5,6 +5,7 @@ $(function() {
         nickname: (val) => {
             if (val.length > 6) return "昵称长度必须在 1 ~ 6 个字符之间！";
         },
+        email:[/@/,'邮箱格式错误'],
     });
     const layer = layui.layer;
 // 初始化用户信息
@@ -12,14 +13,16 @@ const initUserInfo = () => {
   $.ajax({
     type: "GET",
     url: "/my/userinfo",
+    data:null,
     success: (res) => {
+        
       if (res.status !== 0) return layer.msg("获取用户信息失败！");
       form.val("formUserInfo", res.data);
     },
   });
 };
 
-
+initUserInfo();
 
 // 重置表单数据 
 $("#btnReset").click((e) => {
@@ -32,7 +35,7 @@ $(".layui-form").on("submit", (e) => {
     $.ajax({
         type: "POST",
         url: "/my/userinfo",
-        data: $(".layui-form").serialize(),
+        data: form.val('formUserInfo'),
         success: (res) => {
             if (res.status !== 0) return layer.msg("更新用户信息失败！");
             layer.msg("更新用户信息成功！");
@@ -41,5 +44,5 @@ $(".layui-form").on("submit", (e) => {
         },
     });
 });
-initUserInfo();
+
 })
